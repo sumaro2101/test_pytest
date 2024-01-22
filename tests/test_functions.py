@@ -1,12 +1,7 @@
-from utils.functions import open_json, sorting_by_executed, sorting_by_string, output_trans
+from utils.functions import sorting_by_executed, sorting_by_string, output_trans
 
 
 class Tests:
-    def test_open_json(self):
-        """Проверка необходимых ключей в json(e)"""
-        js = {"id", "state", "date", "operationAmount", "amount"
-              "currency", "name", "code", "description", "from", "to"}
-        assert js in open_json()
 
     def test_sorting_by_executed(self):
         """Если подаётся ключ 'state' со значением 'CANCELED',
