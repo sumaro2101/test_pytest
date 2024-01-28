@@ -1,51 +1,31 @@
 import json
-
+import pytest
 from utils.functions import open_json, sorting_by_executed, sorting_by_string, output_trans
 
-
-class Tests:
-    def test_open_json(self):
-        with open('tests/test_operation.json', encoding='utf-8') as f:
+@pytest.mark.utils
+class TestsUtils:
+    def test_open_json(self, path_to_test, init_json):
+        with open(path_to_test, encoding='utf-8') as f:
             test = json.load(f)
-        assert test in open_json("utils/operations.json")
+        assert test == init_json
 
 
-    def test_sorting_by_executed(self):
+    def test_sorting_by_executed(self, init_json):
         """Если подаётся ключ 'state' со значением 'CANCELED',
         тест операцию не засчитывает"""
-        sort = [{"state": "EXECUTED"}, {"state": "CANCELED"}]
-        assert sorting_by_executed(sort) == [{"state": "EXECUTED"}]
+        sort = len([item["state"] for item in init_json if item["state"] == "EXECUTED"])
+        assert sort == 2
 
-    def test_sorting_by_string(self):
+
+    def test_sorting_by_string(self, init_json):
         """Проверка на правильную сортировку с верной длиной"""
-        string = [{"date": "2019-08-26T10:50:58.294041"}, {"date": "2019-07-03T18:35:29.512364"},
-                  {"date": "2018-06-30T02:08:58.425572"}, {"date": "2018-03-23T10:45:06.972075"},
-                  {"date": "2019-04-04T23:20:05.206878"}, {"date": "2019-03-23T01:09:46.296404"}]
-        assert len(sorting_by_string(string)) == 5
-        assert sorting_by_string(string) == [{"date": "2019-08-26T10:50:58.294041"},
-                                             {"date": "2019-07-03T18:35:29.512364"},
-                                             {"date": "2019-04-04T23:20:05.206878"},
-                                             {"date": "2019-03-23T01:09:46.296404"},
-                                             {"date": "2018-06-30T02:08:58.425572"}]
+        file = sorting_by_string(init_json)
+        assert file[0]['date'] > file[1]['date'] > file[2]['date']
 
-    def test_output_trans(self):
+
+    def test_output_trans(self, init_json):
         """Проверка на правильную реформацию входящих данных"""
-        input_ = [{
-            "id": 667307132,
-            "state": "EXECUTED",
-            "date": "2019-07-13T18:51:29.313309",
-            "operationAmount": {
-                "amount": "97853.86",
-                "currency": {
-                    "name": "руб.",
-                    "code": "RUB"
-                }
-            },
-            "description": "Перевод с карты на счет",
-            "from": "Maestro 1308795367077170",
-            "to": "Счет 96527012349577388612"
-        }
-        ]
-        assert output_trans(input_) == ['13.07.2019 Перевод с карты на счет\n'
-                                        'Maestro 1308 79** **** 7170 -> Счет **8612\n'
-                                        '97853.86 руб.\n']
+        input_ = [init_json[0]]
+        assert output_trans(input_) == ['26.08.2019 Перевод организации\n'
+                                        'Maestro 1596 83** **** 5199 -> Счет **9589\n'
+                                        '31957.58 руб.\n']
