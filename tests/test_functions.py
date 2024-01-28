@@ -1,7 +1,14 @@
-from utils.functions import sorting_by_executed, sorting_by_string, output_trans
+import json
+
+from utils.functions import open_json, sorting_by_executed, sorting_by_string, output_trans
 
 
 class Tests:
+    def test_open_json(self):
+        with open('tests/test_operation.json', encoding='utf-8') as f:
+            test = json.load(f)
+        assert test in open_json("utils/operations.json")
+
 
     def test_sorting_by_executed(self):
         """Если подаётся ключ 'state' со значением 'CANCELED',

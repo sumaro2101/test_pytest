@@ -2,11 +2,11 @@ import json
 from datetime import datetime
 
 
-def open_json() -> list:
+def open_json(operation) -> list:
     """Читает файл json
     :return: список из json(a)
     """
-    with open('operations.json') as f:
+    with open(operation, encoding='utf-8') as f:
         filename = json.load(f)
         return filename
 
